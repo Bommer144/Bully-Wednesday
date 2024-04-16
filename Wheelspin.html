@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BullyOnsdag!</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+        color: #333; /* Dark-grey text color */
+    }
+    #container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    #result {
+        font-size: 36px; /* Increased text size */
+        margin-bottom: 20px;
+        color: #007bff; /* Blue color */
+    }
+    .btn {
+        padding: 20px 40px; /* Increased button size */
+        font-size: 20px; /* Increased button text size */
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-bottom: 20px;
+    }
+    .btn:hover {
+        background-color: #0056b3;
+    }
+    #rules {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-top: 20px;
+        font-style: italic;
+        color: #555;
+    }
+    #title {
+        font-size: 72px; /* Increased title size */
+        margin-top: 20px;
+    }
+</style>
+</head>
+<body>
+
+<h1 id="title">BullyOnsdag!</h1>
+
+<div id="container">
+    <div id="result">Pick someone!</div>
+    <button id="rollNameBtn" class="btn" onclick="rollName()">Roll Name</button>
+    <button id="rollPunishmentBtn" class="btn" onclick="rollPunishment()">Roll Punishment</button>
+    <div id="rules">
+        <p>The rules are: Do not overdo it and do not hurt the person. Avoid escalating into conflict. If the person absolutely does not want to be punished, we can roll another punishment, but only if more than 50% of the people agree. If the person insists, "Seriously stop," then remove the punishment or reroll.</p>
+    </div>
+</div>
+
+<script>
+    var lastPicked = ""; // To store the last picked person
+    var cooldown = false; // To track cooldown status
+
+    function rollName() {
+        if (cooldown) return; // If cooldown is active, do nothing
+        
+        document.getElementById('result').textContent = "Loading...";
+        document.getElementById('rollNameBtn').style.display = "none"; // Hide roll name button during cooldown
+        document.getElementById('rollPunishmentBtn').style.display = "none"; // Hide roll punishment button during cooldown
+        cooldown = true; // Set cooldown active
+
+        setTimeout(function() {
+            var options = ["Morgan", "Afonso", "Anton P", "Max", "Dino", "Elvira", "Filip", "Luka"];
+            
+            // Remove the last picked person from options to prevent rolling the same person again
+            var index = options.indexOf(lastPicked);
+            if (index !== -1) {
+                options.splice(index, 1);
+            }
+
+            var randomIndex = Math.floor(Math.random() * options.length);
+            var result = options[randomIndex];
+            
+            document.getElementById('result').textContent = "You picked: " + result;
+
+            // Store the last picked person
+            lastPicked = result;
+
+            cooldown = false; // Reset cooldown
+            document.getElementById('rollNameBtn').style.display = "block"; // Show roll name button after cooldown
+            document.getElementById('rollPunishmentBtn').style.display = "block"; // Show roll punishment button after cooldown
+        }, 1000); // 1-second cooldown
+    }
+
+    function rollPunishment() {
+        var punishments = [
+            "Slap",
+            "Scare",
+            "Send weird notes/messages",
+            "Call by fake name",
+            "Be racist towards the person",
+            "Be sexual towards the person",
+            "Act acoustic around the person",
+            "Punching bag (just pushing)",
+            "Lucky (reroll)",
+            "Throwing stuff at the person",
+            "Tell the person they have nice muscles in a sexual way and start touching any muscle"
+        ];
+        
+        // Remove Elvira and Dino from punishments
+        if (lastPicked === "Elvira" || lastPicked === "Dino") {
+            var index = punishments.indexOf("Slap");
+            if (index !== -1) {
+                punishments.splice(index, 1);
+            }
+            index = punishments.indexOf("Be sexual towards the person");
+            if (index !== -1) {
+                punishments.splice(index, 1);
+            }
+            index = punishments.indexOf("Tell the person they have nice muscles in a sexual way and start touching any muscle");
+            if (index !== -1) {
+                punishments.splice(index, 1);
+            }
+        }
+
+        var randomIndex = Math.floor(Math.random() * punishments.length);
+        var punishment = punishments[randomIndex];
+
+        if (Math.random() < 0.3) {
+            var secondPunishment = punishments[Math.floor(Math.random() * punishments.length)];
+            if (punishment !== secondPunishment) {
+                punishment += " & " + secondPunishment;
+            }
+        }
+
+        document.getElementById('result').textContent += ". Punishment: " + punishment;
+        document.getElementById('rollPunishmentBtn').style.display = "none"; // Hide roll punishment button after roll
+    } 
+</script>
+
+</body>
+</html>
